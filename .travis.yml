@@ -10,5 +10,11 @@ after_success:
   - docker build -t sreeram91/multi-nginx ./nginx
   - docker build -t sreeram91/multi-server ./server
   - docker build -t sreeram91/multi-worker ./worker
-
-  
+    #login to docker CLI in order to push the code to docker hub
+    #the credentials for docker hub is kept in env variables session in Travis CI
+  - echo "DOCKER_PASS" | docker login -u "DOCKER_ID" --password-stdin
+    #now take the above builds and push it to docker hun
+  - docker push sreeram91/multi-client
+  - docker push sreeram91/multi-nginx 
+  - docker push sreeram91/multi-server
+  - docker push sreeram91/multi-worker
