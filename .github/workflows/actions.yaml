@@ -1,0 +1,27 @@
+name: Multi-Container Deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker build -t sreeram91/react-test -f ./client/Dockerfile.dev ./client
+      - run: docker run -e CI=true USERNAME/react-test npm test
+      
+      - run: docker build -t sreeram91/multi-client ./client
+      - run: docker build -t sreeram91/multi-nginx ./nginx
+      - run: docker build -t sreeram91/multi-server ./server
+      - run: docker build -t sreeram91/multi-worker ./worker
+
+      - run: docker push sreeram91/multi-client
+      - run: docker push sreeram91/multi-nginx 
+      - run: docker push sreeram91/multi-server
+      - run: docker push sreeram91/multi-worker
+
+      - name: Generate deployment package
+      run: zip -r deploy.zip . -x '*.git*'
