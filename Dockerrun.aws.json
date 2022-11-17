@@ -1,0 +1,38 @@
+{
+    "AWSEBDockerrunVersion": 2,                     
+    "containerDefinitions": [                      
+        {
+            "name": "client",                       
+            "image": "sreeram91/multi-client",     
+            "essential": false 
+        },                     
+        {
+            "name": "server",
+            "image": "sreeram91/multi-server",
+            "hostname": "api",
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "sreeram91/multi-worker",
+            "hostname": "worker",                   
+            "essential": false
+        },
+        {
+            "name": "nginx",                        
+            "image": "sreeram91/multi-nginx",
+            "hostname": "nginx",                    
+            "essential": true,                      
+            "portMappings": [                      
+                {
+                    "hostPort": 3002,
+                    "containerPort": 80
+                }
+            ],
+            "link": [
+                "client",
+                "server"
+            ]
+        }
+    ]
+}
